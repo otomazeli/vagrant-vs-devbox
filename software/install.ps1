@@ -3,6 +3,8 @@ Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManage
 
 $env:ChocolateyInstall = Convert-Path "$((Get-Command choco).Path)\..\.."
 Import-Module "$env:ChocolateyInstall\helpers\chocolateyProfile.psm1"
+choco upgrade chocolatey
+choco -v
 
 choco feature enable -n=allowGlobalConfirmation
 
@@ -27,6 +29,7 @@ cinst ARRv3_0 --source webpi
 
 # ---- Applications ----
 cinst git
+cinst jre8
 cinst python
 cinst nodejs-lts
 cinst yarn
@@ -46,6 +49,8 @@ cinst dotnetcore-sdk
 cinst dotnetcore-windowshosting
 cinst dotnet-sdk
 cinst dotnet-windowshosting
+cinst foxitreader
+cinst tortoisesvn 
 
 refreshenv
 
@@ -77,6 +82,46 @@ code --install-extension ms-azuretools.vscode-docker
 code --install-extension ms-vscode-remote.remote-containers
 code --install-extension ms-vscode.powershell
 code --install-extension octref.vetur
+code --install-extension formulahendry.auto-close-tag
+code --install-extension kevinkyang.auto-comment-blocks
 
+code --install-extension hookyqr.beautify
+code --install-extension aaron-bond.better-comments
+code --install-extension ms-azuretools.vscode-bicep
+code --install-extension ms-dotnettools.csharp
+code --install-extension systemticks.c4-dsl-extension
+code --install-extension streetsidesoftware.code-spell-checker
+code --install-extension exodiusstudios.comment-anchors
+code --install-extension intellsmi.comment-translate
+code --install-extension trinm1709.dracula-theme-from-intellij
+code --install-extension alefragnani.delphi-pack
+code --install-extension alefragnani.delphi-keybindings
+code --install-extension alefragnani.delphi-themes
+code --install-extension sdrubolo.diagram-language
+code --install-extension emmanuelbeziat.vscode-great-icons
 # ---- Ruby Gems ----
-gem install ultrahook
+#gem install ultrahook
+
+#Git Configuration (Refresh PowerShell Environment Variables)
+$env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User") 
+git config --global user.name "Usuario"
+git config --global user.email EMAIL
+git config --list
+
+
+#create workspace
+cd C:\
+md workspace
+cd workspace
+md delphi
+cd delphi
+
+#Create Acumin Cutoff folder
+
+md Acumin2.0
+cd Acumin2.0
+svn checkout https://svn/svn/Acumin/branches/CutOff/Acumin2.0
+
+#Fortes Report
+#cd C:\
+#git clone https://github.com/fortesinformatica/fortesreport-ce.git FortesReport

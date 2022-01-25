@@ -4,6 +4,11 @@
 Vagrant.configure("2") do |config|
     config.vm.box = "baunegaard/win10pro-en"
     config.vm.hostname = "win10vs"
+	
+	#config.vm.provision "shell", inline: <<-SHELL
+	#	config.winrm.username = Read-Host -Prompt 'Input your server name'
+	#	config.winrm.password = Read-Host -Prompt 'Input the user name'
+	#SHELL
 
     config.winrm.username = "vagrant"
     config.winrm.password = "vagrant"
@@ -15,6 +20,18 @@ Vagrant.configure("2") do |config|
         # Add hostnames to map here
     )
 
+	config.vm.guest = :windows
+	config.vm.communicator = :winrm      
+	
+	config.vm.network "private_network", type: "dhcp" 
+	config.vm.network "forwarded_port", host: 33389, guest: 3389, id: "rdp", auto_correct: true
+
+	config.ssh.password = "vagrant"
+	config.ssh.username = "vagrant" 
+	  
+	config.vm.synced_folder '.', '/vagrant', disabled: true
+  #config.vm.synced_folder "app/", "/app"
+  
     config.vm.provider "parallels" do |prl, override|
         prl.name = "Win10_VS"
         prl.cpus = 4
@@ -34,9 +51,11 @@ Vagrant.configure("2") do |config|
     end
 
     config.vm.provider :virtualbox do |v, override|
-        v.name = "Win10_VS"
+        v.name = "WIN10_DEV_VS_DELPHIX"
         v.customize ["modifyvm", :id, "--cpus", 4]
+		v.customize ["modifyvm", :id, "--vram", "256"]
         v.customize ["modifyvm", :id, "--memory", 8192]
+		v.default_nic_type = "82540EM"
     end
 
     config.vm.provision "shell", path: "configure/pre-windowssettings.ps1"
@@ -45,4 +64,9 @@ Vagrant.configure("2") do |config|
     config.vm.provision "shell", path: "configure/post-windowssettings.ps1"
     config.vm.provision :reload
     config.vm.provision "shell", path: "configure/install-windowsupdates.ps1"
+	
+#PC NAME  = WIN10_DEV_VS_DELPHIX
+#LOGIN    = WIN10_DEV_VS_DELPHIX\vagrant
+#Password = vagrant
+#Reactivate Windows(Run CMD As Administrator) => slmgr /rearm 	
 end
